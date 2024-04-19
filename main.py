@@ -34,11 +34,11 @@ if __name__ == "__main__":
         writer_config = ExcelWriterConfig(folder_path, config.downloaded_file_type)
         excel_config = ExcelConfig(reader_config, writer_config)
 
-        url_processor = ProcessorMeassureFiles(writer_config, config.download_timout)
-        #url_processor = PdfDownloader_test(writer_config, config.download_timout)
+        #url_processor = ProcessorMeassureFiles(writer_config, config.download_timout)
+        url_processor = ProcessorDownloadFiles(writer_config, config.download_timout)
 
-        filter = FilterDefaultRedownloadEverything(config.downloaded_file_type)
-        #filter = FilterDefault(writer_config.path_download, config.downloaded_file_type)
+        #filter = FilterDefaultRedownloadEverything(config.downloaded_file_type)
+        filter = FilterDefault(writer_config.path_download, config.downloaded_file_type)
         
         max_download = config.max_downloads if config.uses_max_download else -1
 
