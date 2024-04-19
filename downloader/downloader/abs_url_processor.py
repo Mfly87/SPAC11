@@ -15,6 +15,8 @@ class AbsUrlProcessor(abc.ABC):
         self._timeout = timeout if 0 < timeout else 9999
         self._log = dict()
 
+        self.processed_column: str = ""
+
     @property
     def config(self) -> ExcelWriterConfig:
         return self._config
@@ -38,9 +40,6 @@ class AbsUrlProcessor(abc.ABC):
             return None
         return None
         
-
-
-
     def _get_name_url_tuple_list(self, data_frame: DataFrame, column_with_link:str) -> list[tuple[str,str]]:
         _name_url_tuple_list: list[tuple[str, str]] = []
 
@@ -53,7 +52,9 @@ class AbsUrlProcessor(abc.ABC):
 
         return _name_url_tuple_list
 
-    def download_from_data_frame(self, data_frame: DataFrame, column_with_link:str):
+    def process_url(self, data_frame: DataFrame, column_with_link:str):
+        self.processed_column = column_with_link
+
         _name_url_tuple_list: list[tuple[str, str]] = self._get_name_url_tuple_list(
             data_frame, 
             column_with_link

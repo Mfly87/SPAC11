@@ -1,47 +1,50 @@
 from excel import ExcelConfig, ExcelWriterConfig, ExcelReaderConfig, PdfDownloader
 from downloader.downloader import DownloadSizeMeassurer, PdfDownloader_test
 from pathlib import Path
-
 from excel.reader.filters import FilterDefault, FilterDefaultRedownload
+
+import  tkinter as tk
+from tkinter import filedialog
+
+
+from pandas import DataFrame
 
 print("\n\n")
 
-download_folder = str(Path.cwd()) + '\\downloadFolder\\'
+sheet_name = "0"
 
-path_excel = '/import/GRI_2017_2020.xlsx'
-path_excel = str(Path.cwd()) + path_excel
+excel_id_column = "BRnum"
+excel_columns_with_urls = ["Pdf_URL", "Report Html Address"]
 
-file_type = ".pdf"
-columns_with_url = ["Pdf_URL", "Report Html Address"]
-ID = "BRnum"
+downloaded_file_type = ".pdf"
+download_timout = 10
 
-reader_config = ExcelReaderConfig(path_excel, "0", ID)
-writer_config = ExcelWriterConfig(download_folder, file_type)
-excel_config = ExcelConfig(reader_config, writer_config)
 
-url_processor = DownloadSizeMeassurer(writer_config, 10)
 
-filter = FilterDefaultRedownload(file_type)
 
-pdf_downloader = PdfDownloader(
-    excel_config,
-    url_processor,
-    filter,
-    columns_with_url,
-    max_downloads=50
-    )
 
-pdf_downloader.download_pdf_files()
-'''
-import easygui
-print(easygui.fileopenbox(msg="Open Excel file", title= "Empre"))
-'''
-
-'''
-import  tkinter as tk
-from tkinter import filedialog
 root = tk.Tk()
 root.withdraw()
-file_path = filedialog.askopenfilename()
-print(file_path)
-'''
+file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+folder_path = str(Path(file_path).parent)
+
+if 1 < len(folder_path):
+    reader_config = ExcelReaderConfig(file_path, sheet_name, excel_id_column)
+    writer_config = ExcelWriterConfig(folder_path, downloaded_file_type)
+    excel_config = ExcelConfig(reader_config, writer_config)
+
+    url_processor = PdfDownloader_test(writer_config, download_timout)
+
+    filter = FilterDefaultRedownload(downloaded_file_type)
+
+    pdf_downloader = PdfDownloader(
+        excel_config,
+        url_processor,
+        filter,
+        excel_columns_with_urls,
+        max_downloads=250
+        )
+
+    pdf_downloader.download_pdf_files()
+    
+    

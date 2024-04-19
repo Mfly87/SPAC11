@@ -2,7 +2,7 @@ from excel.writer.excel_writer_config import ExcelWriterConfig
 from .abs_url_processor import AbsUrlProcessor
 
 from urllib import request, response, parse
-
+from http.client import HTTPResponse
 class DownloadSizeMeassurer(AbsUrlProcessor):
 
     def __init__(self, config: ExcelWriterConfig, timeout: int) -> None:
@@ -24,6 +24,8 @@ class DownloadSizeMeassurer(AbsUrlProcessor):
     
     def get_file_size(self, url_link: str) -> float:
         request.urlcleanup()
+
+        url: HTTPResponse
         with request.urlopen(url_link, timeout=self.timeout) as url:
             info: dict[str,str] = url.info()
             return info["Content-Length"]
