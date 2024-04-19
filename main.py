@@ -1,99 +1,58 @@
-import pandas as pd
-from pandas import DataFrame
+import  tkinter as tk
+from tkinter import filedialog
 from pathlib import Path
-import urllib
 
-from excel.reader.filters import FilterNotDownloadedInColumn
-from excel import ExcelReader
+from excel import ExcelConfig, ExcelWriterConfig, ExcelReaderConfig, PdfDownloader
+from excel.reader.filters import FilterDefault, FilterDefaultRedownloadEverything
 
-from urllib import request, response, parse
+from downloader.urlProcessors import ProcessorMeassureFiles, ProcessorDownloadFiles
 
-import os.path
+class Config():
+    sheet_name = "0"
 
-import glob
+    excel_id_column = "BRnum"
+    excel_columns_with_urls = ["Pdf_URL", "Report Html Address"]
 
-print("\n\n")
+    downloaded_file_type = ".pdf"
+    download_timout = 10
 
-download_folder = str(Path.cwd()) + '\\downloadFolder\\'
+    max_downloads = 50
+    uses_max_download = False
 
-'''
-path_excel = '/import/GRI_2017_2020.xlsx'
-path_excel = str(Path.cwd()) + path_excel
+if __name__ == "__main__":
+    print("\n\n")
 
-file_type = ".pdf"
-column_name = "Pdf_URL"
-ID = "BRnum"
+    config = Config()
 
-excel_reader = ExcelReader(path_excel, "0", ID)
-data_frame = excel_reader.get_excel_data_frame()
+    root = tk.Tk()
+    root.withdraw()
+    file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+    folder_path = str(Path(file_path).parent)
 
-filter_all = FilterNotDownloadedInColumn(download_folder, file_type, column_name)
-data_frame = filter_all.filter(data_frame)
+    if 1 < len(folder_path):
+        reader_config = ExcelReaderConfig(file_path, config.sheet_name, config.excel_id_column)
+        writer_config = ExcelWriterConfig(folder_path, config.downloaded_file_type)
+        excel_config = ExcelConfig(reader_config, writer_config)
 
+        #url_processor = ProcessorMeassureFiles(writer_config, config.download_timout)
+        url_processor = ProcessorDownloadFiles(writer_config, config.download_timout)
 
-count = 0
-print("DF_all : %i" % (len(data_frame.index)))
-
-def download_progress_hook(count, blockSize, totalSize):
-    print(count, blockSize, totalSize)
-
-def get_file_size(url_link: str):
-    request.urlcleanup()
-    with request.urlopen(url_link, timeout=1) as url:
-        info: dict[str,str] = url.info()
-        return info["Content-Length"]
-
-
-total_size = 0
-
-size_type = ["","K","M","G","T","P"]
-
-size_i = 0
-size_lim = 1024
-
-tot = float(len(data_frame.index))
-
-for x, col_id in enumerate(df.index):
-
-    savefile = str(download_folder + str(col_id) + '.pdf')
-    try:
-        url_link = df.at[col_id,'Pdf_URL']
+        #filter = FilterDefaultRedownloadEverything(config.downloaded_file_type)
+        filter = FilterDefault(writer_config.path_download, config.downloaded_file_type)
         
-        #request.urlretrieve(url_link, savefile, reporthook=download_progress_hook)
-        #request.urlcleanup()
-        
-        file_size = get_file_size(url_link)
-        total_size += file_size
-        print(file_size)
+        max_download = config.max_downloads if config.uses_max_download else -1
 
-        if size_lim < total_size:
-            size_lim *= 1024
-            size_i += 1
-        break
+        pdf_downloader = PdfDownloader(
+            excel_config,
+            url_processor,
+            filter,
+            config.excel_columns_with_urls,
+            max_downloads = max_download
+            )
 
-    except:
-        pass
-    print("%.2f%% - %i - %.2f %sB" % (
-        100 * float(x)/tot, 
-        x, 
-        total_size, 
-        size_type[size_i]
-        ))
+        pdf_downloader.download_pdf_files()
 
-print("\n\n")
+        print("")
+        url_processor.print_log()
 
-print("DONE!")
-print(count)
-
-print(total_size)
-'''
-
-
-from multiprocessing import Pool
-
-def f(x):
-    return x*x
-
-if __name__ == '__main__':
-    with Pool(5) as p:
-        print(p.map(f, [1, 2, 3]))
+    
