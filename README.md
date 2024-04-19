@@ -16,7 +16,7 @@ The program will create sub folders in the selected folder and can potentially d
 1. Clone the repo
 2. Install requirements in 'requirements.txt'
 3. Configure the 'Config' class in 'main.py'
-4. Use comments to select different types of url_handlers and filters
+4. Use comments to select different types of url_handlers and filters in 'main.py'
 5. Run 'main.py'
 6. When the program asks for a file, select the Excel file this program was built for.
 7. Browse the log files created
