@@ -1,9 +1,5 @@
 import abc
-
 from pandas import DataFrame
-from tqdm import tqdm
-
-import sys
 
 from excel.writer.excel_writer_config import ExcelWriterConfig
 from ..thread_pool_handler import ThreadPoolHandler
@@ -32,13 +28,13 @@ class AbsUrlProcessor(abc.ABC):
     def _set_log_entry(self, key: str, field:str, value:any) -> None:
         self.log[key][field] = value
 
-    def _get_log_entry(self, key: str, field:str) -> any:
+    def _get_log_entry(self, key: str, field:str, *, default_value = None) -> any:
         if key in self.log:
             _dict = self.log[key]
             if field in _dict:
                 return _dict[field]
-            return None
-        return None
+            return default_value
+        return default_value
         
     def _get_name_url_tuple_list(self, data_frame: DataFrame, column_with_link:str) -> list[tuple[str,str]]:
         _name_url_tuple_list: list[tuple[str, str]] = []

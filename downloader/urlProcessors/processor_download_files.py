@@ -1,11 +1,10 @@
 from excel.writer.excel_writer_config import ExcelWriterConfig
 from .abs_url_processor import AbsUrlProcessor
 
-from urllib import request, error
-from urllib.parse import urlparse, ParseResult
+from urllib import request
 from http.client import HTTPResponse
 
-class PdfDownloader_test(AbsUrlProcessor):
+class ProcessorDownloadFiles(AbsUrlProcessor):
 
     def __init__(self, config: ExcelWriterConfig, timeout: int) -> None:
         super().__init__(config, timeout)

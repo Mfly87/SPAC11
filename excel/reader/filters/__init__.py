@@ -1,2 +1,2 @@
 from .abstract import AbsFilterBasic, AbsFilterCombo
-from .combined import FilterDefault, FilterDefaultRedownload
+from .combined import FilterDefault, FilterDefaultRedownloadEverything

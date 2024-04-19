@@ -3,7 +3,7 @@ from .reader import ExcelReader
 from .writer import ExcelWriter
 from .excel_config import ExcelConfig
 
-from downloader.downloader.abs_url_processor import AbsUrlProcessor
+from downloader.urlProcessors.abs_url_processor import AbsUrlProcessor
 
 from pandas import DataFrame
 

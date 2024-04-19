@@ -3,6 +3,11 @@ from ..abstract import AbsFilterCombo
 from ..basic import FilterNan, FilterNull, FilterExistingFiles, FilterEndsWith
 
 class FilterDefault(AbsFilterCombo):
+    '''
+    Skips empty rows\n
+    Skips rows with wrong file type\n
+    Skips rows that have already been downloaded\n
+    '''
 
     def __init__(self, download_folder_path:str, file_type:str) -> None:
         self._file_type = file_type

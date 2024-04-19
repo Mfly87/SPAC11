@@ -2,7 +2,11 @@ from pandas import DataFrame
 from ..abstract import AbsFilterCombo
 from ..basic import FilterNan, FilterNull, FilterEndsWith
 
-class FilterDefaultRedownload(AbsFilterCombo):
+class FilterDefaultRedownloadEverything(AbsFilterCombo):
+    '''
+    Skips empty rows\n
+    Skips rows with wrong file type\n
+    '''
 
     def __init__(self, file_type:str) -> None:
         self._file_type = file_type

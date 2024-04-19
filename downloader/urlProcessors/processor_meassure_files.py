@@ -1,9 +1,10 @@
 from excel.writer.excel_writer_config import ExcelWriterConfig
 from .abs_url_processor import AbsUrlProcessor
 
-from urllib import request, response, parse
+from urllib import request
 from http.client import HTTPResponse
-class DownloadSizeMeassurer(AbsUrlProcessor):
+
+class ProcessorMeassureFiles(AbsUrlProcessor):
 
     def __init__(self, config: ExcelWriterConfig, timeout: int) -> None:
         super().__init__(config, timeout)
@@ -18,10 +19,11 @@ class DownloadSizeMeassurer(AbsUrlProcessor):
         except:
             return
                 
+        _prev_size = self._get_log_entry(_name, "file_size", default_value=0)
+        _file_size = max(_file_size, _prev_size)
+
         self._set_log_entry(_name, "file_size", _file_size)
 
-        
-    
     def get_file_size(self, url_link: str) -> float:
         request.urlcleanup()
 
